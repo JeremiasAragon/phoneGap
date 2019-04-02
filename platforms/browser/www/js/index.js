@@ -1,22 +1,16 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 var app = {
+    onBatteryStatus: function(evt) {
+        // Manejar el evento
+        document.getElementById('container').style.height=evt.level + "%";
+        document.getElementsByTagName('h1')[0].innerHTML=evt.level + "%";
+        var p = document.querySelector('.received');
+        var status = evt.isPlugged ? "Enchufado" : "Desenchufado";
+        p.innerHTML = p.innerHTML + "<br />" + status;
+    },
+    onBatteryCritical: function(evt) {
+        // Que hacer cuando llegue a nivel critico
+        alert("Nivel de bateria critico " + evt.level + "%\nBuscar enchufe!");
+    },
     // Application Constructor
     initialize: function() {
         this.bindEvents();
@@ -33,7 +27,10 @@ var app = {
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
+        document.getElementById('device').innerHTML = device.manufacturer + '  ' + device.model;
         app.receivedEvent('deviceready');
+        window.addEventListener('batterystatus', app.onBatteryStatus, false);
+        window.addEventListener('batterycritical', app.onBatteryCritical, false);
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
